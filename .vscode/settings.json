@@ -1,0 +1,34 @@
+{
+    "emeraldwalk.runonsave": {
+        "autoClearConsole": true,
+        "commands": [
+            {
+                "isAsync": true,
+                "cmd": "go mod tidy"
+            },
+            {
+                "match": "\\.go$",
+                "isAsync": true,
+                "cmd": "goimports -w ."
+            },
+            {
+                "match": "\\.go$",
+                "isAsync": true,
+                "cmd": "goformat -w ."
+            }
+        ]
+    },
+    "editor.formatOnSave": true,
+    "go.testFlags": [
+        "-v"
+    ],
+    "cSpell.words": [
+        "github",
+        "hashicorp",
+        "http",
+        "import",
+        "ioutil",
+        "package",
+        "palantir"
+    ]
+}
