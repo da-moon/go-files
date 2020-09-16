@@ -10,4 +10,4 @@
 </p>
 
 collection of utility methods that make working with files easier.This package is experimental. use at your own risk.
-many of these functions were original found at other repos. `doc.go` contains source repos in case you are interested.
+many of these functions were originally found at other repos.mainly, they were taken from prometheus and victoria metrics repos but for a full list of references, refer to `doc.go`. In case a function has multiple os implementation, for sake of keeping the codebase small, only linux implementation were kept

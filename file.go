@@ -2,55 +2,30 @@ package files
 
 import (
 	"os"
-	"path/filepath"
+	"regexp"
 
 	stacktrace "github.com/palantir/stacktrace"
 )
 
-// FindFile searches a root directory recursively for files with a pattern
-func FindFile(root, pattern string) ([]string, error) {
-	var matches []string
-	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if info.IsDir() {
-			return nil
-		}
-		matched, err := filepath.Match(pattern, filepath.Base(path))
-		if err != nil {
-			err = stacktrace.Propagate(err, "filepath did not match pattern")
-			return err
-		} else if matched {
-			matches = append(matches, path)
-		}
-		return nil
-	})
+// [TODO] add flock
+
+// FileSize returns file size for the given path.
+func FileSize(path string) (int64, error) {
+	var err error
+	fi, err := os.Stat(path)
 	if err != nil {
-		err = stacktrace.Propagate(err, "could not find file with root path '%s' and pattern '%s'", root, pattern)
-		return nil, err
+		err = stacktrace.Propagate(err, "could not get file size at '%s'", path)
+		return -1, err
 	}
-	return matches, nil
+	if fi.IsDir() {
+		err = stacktrace.NewError("'%s' is a directory", path)
+		return -1, err
+	}
+	return fi.Size(), nil
 }
 
-// OpenPath ...
-func OpenPath(path string) (*os.File, os.FileInfo, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		err = stacktrace.Propagate(err, "Error reading '%s'", path)
-		return nil, nil, err
-	}
-	fi, err := f.Stat()
-	if err != nil {
-		f.Close()
-		err = stacktrace.Propagate(err, "Error reading '%s'", path)
-		return nil, nil, err
-	}
-	if fi.Size() == 0 {
-		os.Remove(path)
-		err = stacktrace.NewError("file at '%v' was empty", path)
-		return nil, nil, err
-	}
-
-	return f, fi, nil
+// IsTemporaryFileName returns true if fn matches temporary file name pattern
+func IsTemporaryFileName(fn string) bool {
+	tmpFileNameRe := regexp.MustCompile(`\.tmp\.\d+$`)
+	return tmpFileNameRe.MatchString(fn)
 }

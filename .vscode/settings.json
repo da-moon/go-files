@@ -29,6 +29,8 @@
         "import",
         "ioutil",
         "package",
-        "palantir"
+        "palantir",
+        "repos",
+        "tsdb"
     ]
 }
