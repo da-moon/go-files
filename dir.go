@@ -34,7 +34,7 @@ func ReadDirFiles(root, pattern string) ([]string, error) {
 		if info.IsDir() {
 			return nil
 		}
-		if len(pattern) != 0 {
+		if pattern != "" {
 			matched, err := filepath.Match(pattern, filepath.Base(path))
 			if err != nil {
 				err = stacktrace.Propagate(err, "filepath did not match pattern")
